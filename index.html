@@ -1,120 +1,314 @@
-// Sostituisci la funzione creaDocumentoPDF nel tuo script con questa:
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Creator Pro A4 - Lingue & Hobby</title>
 
-function creaDocumentoPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-    });
-    
-    const stile = document.getElementById('stile_cv').value;
-    let y = 20; 
-    const marginX = 15;
-    const pageWidth = 210;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    // Recupero Dati
-    let nome = document.getElementById('nome').value || "NOME COGNOME";
-    let indirizzo = document.getElementById('indirizzo').value;
-    let email = document.getElementById('email').value;
-    let tel = document.getElementById('telefono').value;
-    let extra = `Patente: ${document.getElementById('patente').checked ? "Sì" : "No"} | Automunito: ${document.getElementById('auto').checked ? "Sì" : "No"}`;
-
-    // --- INTESTAZIONE E FOTO ---
-    if (fotoBase64) {
-        try {
-            // Inserimento foto mantenendo l'aspetto originale (aspect ratio)
-            // Posizionata a destra per uno stile professionale
-            doc.addImage(fotoBase64, 'JPEG', 160, 15, 35, 35, undefined, 'FAST');
-        } catch(e) { console.error("Errore foto:", e); }
-    }
-
-    if (stile === "moderno") {
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(0, 86, 179); // Blu professionale
-        doc.setFontSize(22);
-        doc.text(nome.toUpperCase(), marginX, y);
-        
-        y += 8;
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(60, 60, 60);
-        doc.setFontSize(10);
-        doc.text(`${indirizzo}`, marginX, y);
-        y += 5;
-        doc.text(`Email: ${email} | Tel: ${tel}`, marginX, y);
-        y += 5;
-        doc.text(extra, marginX, y);
-        y += 15;
-    } else {
-        doc.setFont("times", "bold");
-        doc.setTextColor(30, 30, 30);
-        doc.setFontSize(24);
-        doc.text(nome.toUpperCase(), marginX, y);
-        
-        y += 10;
-        doc.setFont("times", "normal");
-        doc.setTextColor(80, 80, 80);
-        doc.setFontSize(11);
-        doc.text(`${indirizzo} | ${email} | ${tel}`, marginX, y);
-        y += 6;
-        doc.text(extra, marginX, y);
-        y += 12;
-    }
-
-    // --- FUNZIONE SEZIONI ---
-    function aggiungiSezione(titolo, testo) {
-        if (!testo || testo.trim() === "") return;
-
-        // Controllo fine pagina
-        if (y > 250) {
-            doc.addPage();
-            y = 20;
+    <style>
+        /* INTERFACCIA NEON */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #050510;
+            color: #00f7ff;
+            overflow-x: hidden;
         }
 
-        // Titolo Sezione stile Europass
-        doc.setFont(stile === "moderno" ? "helvetica" : "times", "bold");
-        doc.setTextColor(stile === "moderno" ? 0, 86, 179 : 0, 0, 0);
-        doc.setFontSize(13);
-        doc.text(titolo.toUpperCase(), marginX, y);
-        
-        y += 2;
-        doc.setDrawColor(stile === "moderno" ? 0, 86, 179 : 200, 200, 200);
-        doc.setLineWidth(0.5);
-        doc.line(marginX, y, 195, y); 
-        y += 7;
-
-        // Testo Sezione
-        doc.setFont(stile === "moderno" ? "helvetica" : "times", "normal");
-        doc.setTextColor(40, 40, 40);
-        doc.setFontSize(11);
-
-        let righe = doc.splitTextToSize(testo, 175);
-        
-        for(let i=0; i<righe.length; i++) {
-            if(y > 280) {
-                doc.addPage();
-                y = 20;
-            }
-            doc.text(righe[i], marginX, y);
-            y += 6; 
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(white 1px, transparent 1px);
+            background-size: 3px 3px;
+            opacity: 0.3;
+            z-index: -2;
         }
-        y += 5; // Spazio tra sezioni
+
+        .page-title {
+            text-align: center;
+            font-size: 30px;
+            margin-top: 20px;
+            text-shadow: 0 0 20px #00f7ff;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 350px;
+            max-width: 550px;
+            padding: 25px;
+            background: rgba(0,0,0,0.85);
+            border: 2px solid #00f7ff;
+            box-shadow: 0 0 20px #00f7ff;
+            border-radius: 12px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            background: #111;
+            border: 1px solid #00f7ff;
+            color: #fff;
+            box-sizing: border-box;
+            border-radius: 4px;
+        }
+
+        .checkbox-group {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            background: #ff00ff;
+            border: none;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 10px #ff00ff;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #cc00cc;
+            transform: translateY(-2px);
+        }
+
+        /* ANTEPRIMA A4 */
+        .cv-paper {
+            background: #fff;
+            color: #333;
+            padding: 20mm;
+            width: 210mm;
+            min-height: 297mm;
+            box-sizing: border-box;
+            text-align: left;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .cv-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        #cv_foto_preview {
+            width: 110px;
+            height: auto;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .section-title {
+            font-weight: bold;
+            color: #0056b3;
+            margin-top: 18px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .cv-paper p {
+            white-space: pre-wrap;
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 6px 0;
+        }
+
+        .credits {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="stars"></div>
+<div class="page-title">CV Creator Professionale A4</div>
+
+<div class="container">
+    <div class="card">
+        <h3>1. Dati Personali</h3>
+        <select id="stile_cv">
+            <option value="moderno">Stile Moderno (Blu)</option>
+            <option value="elegante">Stile Classico (Nero)</option>
+        </select>
+        <input type="file" id="foto" accept="image/*" onchange="caricaFoto(event)">
+        <input id="nome" placeholder="Nome e Cognome">
+        <input id="indirizzo" placeholder="Indirizzo">
+        <input id="email" placeholder="Email">
+        <input id="telefono" placeholder="Telefono">
+        
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="patente"> Patente</label>
+            <label><input type="checkbox" id="auto"> Automunito</label>
+        </div>
+
+        <h3>2. Esperienza & Formazione</h3>
+        <textarea id="profilo" placeholder="Profilo Professionale" rows="2"></textarea>
+        <textarea id="esperienza" placeholder="Esperienze Lavorative" rows="3"></textarea>
+        <textarea id="formazione" placeholder="Istruzione" rows="2"></textarea>
+        
+        <h3>3. Skill & Extra</h3>
+        <textarea id="lingue" placeholder="Lingue (es. Inglese: B2, Francese: Base)" rows="2"></textarea>
+        <textarea id="competenze" placeholder="Competenze Tecniche" rows="2"></textarea>
+        <textarea id="hobby" placeholder="Hobby e Interessi" rows="2"></textarea>
+        <textarea id="privacy" placeholder="Testo Privacy GDPR..." rows="1"></textarea>
+
+        <div class="buttons">
+            <button onclick="aggiornaAnteprima()">Aggiorna Anteprima</button>
+            <button onclick="scaricaPDF()">Scarica PDF A4</button>
+        </div>
+    </div>
+
+    <div style="overflow-x: auto; max-width: 100%;">
+        <div class="cv-paper" id="cv_print_area">
+            <div class="cv-header">
+                <div>
+                    <h1 id="cv_nome" style="margin:0; color:#0056b3;">NOME COGNOME</h1>
+                    <p id="cv_contatti" style="font-weight: bold;"></p>
+                    <p id="cv_extra" style="font-style: italic;"></p>
+                </div>
+                <img id="cv_foto_preview" src="" alt="Foto">
+            </div>
+
+            <div class="section-title">Profilo</div>
+            <p id="cv_profilo"></p>
+
+            <div class="section-title">Esperienza Lavorativa</div>
+            <p id="cv_esperienza"></p>
+
+            <div class="section-title">Istruzione e Formazione</div>
+            <p id="cv_formazione"></p>
+
+            <div class="section-title">Lingue</div>
+            <p id="cv_lingue"></p>
+
+            <div class="section-title">Competenze Tecniche</div>
+            <p id="cv_competenze"></p>
+
+            <div class="section-title">Hobby e Interessi</div>
+            <p id="cv_hobby"></p>
+        </div>
+    </div>
+</div>
+
+<div class="credits">
+    Progetto Didattico - Prof. G. Salerno & O. Semenyuk - 2026
+</div>
+
+<script>
+let fotoBase64 = null;
+
+function caricaFoto(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            fotoBase64 = e.target.result;
+            const img = document.getElementById('cv_foto_preview');
+            img.src = fotoBase64;
+            img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
     }
-
-    aggiungiSezione("Profilo Professionale", document.getElementById('profilo').value);
-    aggiungiSezione("Esperienze Lavorative", document.getElementById('esperienza').value);
-    aggiungiSezione("Istruzione e Formazione", document.getElementById('formazione').value);
-    aggiungiSezione("Competenze Digitali e Interpersonali", document.getElementById('competenze').value);
-    aggiungiSezione("Informazioni Aggiuntive / Social", document.getElementById('social').value);
-
-    // --- PRIVACY (FOOTER) ---
-    let privacy = document.getElementById('privacy').value;
-    if (privacy) {
-        doc.setFontSize(8);
-        doc.setTextColor(130, 130, 130);
-        let righePrivacy = doc.splitTextToSize(privacy, 170);
-        doc.text(righePrivacy, marginX, 285 - (righePrivacy.length * 3));
-    }
-
-    return doc;
 }
+
+function aggiornaAnteprima(){
+    document.getElementById('cv_nome').innerText = document.getElementById('nome').value || "NOME COGNOME";
+    document.getElementById('cv_contatti').innerText = `${document.getElementById('indirizzo').value} | ${document.getElementById('email').value} | ${document.getElementById('telefono').value}`;
+    document.getElementById('cv_extra').innerText = `Patente: ${document.getElementById('patente').checked ? "Sì" : "No"} | Auto: ${document.getElementById('auto').checked ? "Sì" : "No"}`;
+    document.getElementById('cv_profilo').innerText = document.getElementById('profilo').value;
+    document.getElementById('cv_esperienza').innerText = document.getElementById('esperienza').value;
+    document.getElementById('cv_formazione').innerText = document.getElementById('formazione').value;
+    document.getElementById('cv_lingue').innerText = document.getElementById('lingue').value;
+    document.getElementById('cv_competenze').innerText = document.getElementById('competenze').value;
+    document.getElementById('cv_hobby').innerText = document.getElementById('hobby').value;
+}
+
+function scaricaPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const stile = document.getElementById('stile_cv').value;
+    let y = 20;
+    const m = 15;
+
+    // Foto
+    if (fotoBase64) {
+        try { doc.addImage(fotoBase64, 'JPEG', 160, 15, 35, 35); } catch(e){}
+    }
+
+    // Header
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(stile === "moderno" ? 0 : 0, stile === "moderno" ? 86 : 0, stile === "moderno" ? 179 : 0);
+    doc.setFontSize(22);
+    doc.text((document.getElementById('nome').value || "NOME COGNOME").toUpperCase(), m, y);
+    
+    y += 10;
+    doc.setFontSize(10);
+    doc.setTextColor(80, 80, 80);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${document.getElementById('indirizzo').value} | ${document.getElementById('email').value} | ${document.getElementById('telefono').value}`, m, y);
+    y += 15;
+
+    function addSect(title, content) {
+        if (!content || content.trim() === "") return;
+        if (y > 260) { doc.addPage(); y = 20; }
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(stile === "moderno" ? 0 : 0, stile === "moderno" ? 86 : 0, stile === "moderno" ? 179 : 0);
+        doc.setFontSize(12);
+        doc.text(title.toUpperCase(), m, y);
+        y += 2;
+        doc.setDrawColor(220, 220, 220);
+        doc.line(m, y, 195, y);
+        y += 7;
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(10);
+        let lines = doc.splitTextToSize(content, 175);
+        doc.text(lines, m, y);
+        y += (lines.length * 5) + 7;
+    }
+
+    addSect("Profilo", document.getElementById('profilo').value);
+    addSect("Esperienza", document.getElementById('esperienza').value);
+    addSect("Formazione", document.getElementById('formazione').value);
+    addSect("Lingue", document.getElementById('lingue').value);
+    addSect("Competenze", document.getElementById('competenze').value);
+    addSect("Hobby", document.getElementById('hobby').value);
+
+    // Privacy
+    let priv = document.getElementById('privacy').value;
+    if (priv) doc.setFontSize(8).text(doc.splitTextToSize(priv, 170), m, 285);
+
+    doc.save("CV_Professionale.pdf");
+}
+</script>
+</body>
+</html>
