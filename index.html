@@ -3,148 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV Creator Pro A4 - Lingue & Hobby</title>
+    <title>CV Creator Pro A4 - Condivisione & Foto Corretta</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        /* INTERFACCIA NEON */
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #050510;
-            color: #00f7ff;
-            overflow-x: hidden;
-        }
-
-        .stars {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(white 1px, transparent 1px);
-            background-size: 3px 3px;
-            opacity: 0.3;
-            z-index: -2;
-        }
-
-        .page-title {
-            text-align: center;
-            font-size: 30px;
-            margin-top: 20px;
-            text-shadow: 0 0 20px #00f7ff;
-        }
-
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            padding: 20px;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .card {
-            flex: 1;
-            min-width: 350px;
-            max-width: 550px;
-            padding: 25px;
-            background: rgba(0,0,0,0.85);
-            border: 2px solid #00f7ff;
-            box-shadow: 0 0 20px #00f7ff;
-            border-radius: 12px;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 12px;
-            background: #111;
-            border: 1px solid #00f7ff;
-            color: #fff;
-            box-sizing: border-box;
-            border-radius: 4px;
-        }
-
-        .checkbox-group {
-            margin-bottom: 15px;
-            display: flex;
-            gap: 20px;
-            font-size: 14px;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        button {
-            flex: 1;
-            padding: 12px;
-            background: #ff00ff;
-            border: none;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 0 10px #ff00ff;
-            font-weight: bold;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #cc00cc;
-            transform: translateY(-2px);
-        }
-
-        /* ANTEPRIMA A4 */
-        .cv-paper {
-            background: #fff;
-            color: #333;
-            padding: 20mm;
-            width: 210mm;
-            min-height: 297mm;
-            box-sizing: border-box;
-            text-align: left;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        }
-
-        .cv-header {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 2px solid #0056b3;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        #cv_foto_preview {
-            width: 110px;
-            height: auto;
-            border-radius: 4px;
-            display: none;
-        }
-
-        .section-title {
-            font-weight: bold;
-            color: #0056b3;
-            margin-top: 18px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #ddd;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
-
-        .cv-paper p {
-            white-space: pre-wrap;
-            font-size: 12px;
-            line-height: 1.5;
-            margin: 6px 0;
-        }
-
-        .credits {
-            text-align: center;
-            padding: 20px;
-            font-size: 12px;
-            color: #777;
-        }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #050510; color: #00f7ff; overflow-x: hidden; }
+        .stars { position: fixed; width: 100%; height: 100%; background: radial-gradient(white 1px, transparent 1px); background-size: 3px 3px; opacity: 0.3; z-index: -2; }
+        .page-title { text-align: center; font-size: 30px; margin-top: 20px; text-shadow: 0 0 20px #00f7ff; }
+        .container { display: flex; flex-wrap: wrap; padding: 20px; justify-content: center; gap: 20px; }
+        .card { flex: 1; min-width: 350px; max-width: 550px; padding: 25px; background: rgba(0,0,0,0.85); border: 2px solid #00f7ff; box-shadow: 0 0 20px #00f7ff; border-radius: 12px; }
+        input, textarea, select { width: 100%; padding: 10px; margin-bottom: 12px; background: #111; border: 1px solid #00f7ff; color: #fff; box-sizing: border-box; border-radius: 4px; }
+        .buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        button { flex: 1; min-width: 120px; padding: 12px; background: #ff00ff; border: none; color: white; cursor: pointer; box-shadow: 0 0 10px #ff00ff; font-weight: bold; border-radius: 4px; transition: 0.3s; }
+        button:hover { background: #cc00cc; transform: translateY(-2px); }
+        .cv-paper { background: #fff; color: #333; padding: 20mm; width: 210mm; min-height: 297mm; box-sizing: border-box; text-align: left; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .cv-header { display: flex; justify-content: space-between; border-bottom: 2px solid #0056b3; padding-bottom: 15px; margin-bottom: 20px; }
+        #cv_foto_preview { width: 110px; height: auto; max-height: 140px; border-radius: 4px; display: none; object-fit: contain; }
+        .section-title { font-weight: bold; color: #0056b3; margin-top: 18px; text-transform: uppercase; border-bottom: 1px solid #ddd; font-size: 14px; }
+        .cv-paper p { white-space: pre-wrap; font-size: 12px; line-height: 1.5; margin: 6px 0; }
+        .credits { text-align: center; padding: 20px; font-size: 12px; color: #777; }
     </style>
 </head>
 <body>
@@ -154,7 +32,7 @@
 
 <div class="container">
     <div class="card">
-        <h3>1. Dati Personali</h3>
+        <h3>1. Dati & Foto</h3>
         <select id="stile_cv">
             <option value="moderno">Stile Moderno (Blu)</option>
             <option value="elegante">Stile Classico (Nero)</option>
@@ -165,62 +43,39 @@
         <input id="email" placeholder="Email">
         <input id="telefono" placeholder="Telefono">
         
-        <div class="checkbox-group">
-            <label><input type="checkbox" id="patente"> Patente</label>
-            <label><input type="checkbox" id="auto"> Automunito</label>
-        </div>
-
-        <h3>2. Esperienza & Formazione</h3>
+        <h3>2. Esperienza & Skill</h3>
         <textarea id="profilo" placeholder="Profilo Professionale" rows="2"></textarea>
         <textarea id="esperienza" placeholder="Esperienze Lavorative" rows="3"></textarea>
         <textarea id="formazione" placeholder="Istruzione" rows="2"></textarea>
-        
-        <h3>3. Skill & Extra</h3>
-        <textarea id="lingue" placeholder="Lingue (es. Inglese: B2, Francese: Base)" rows="2"></textarea>
+        <textarea id="lingue" placeholder="Lingue" rows="2"></textarea>
         <textarea id="competenze" placeholder="Competenze Tecniche" rows="2"></textarea>
-        <textarea id="hobby" placeholder="Hobby e Interessi" rows="2"></textarea>
+        <textarea id="hobby" placeholder="Hobby" rows="2"></textarea>
         <textarea id="privacy" placeholder="Testo Privacy GDPR..." rows="1"></textarea>
 
         <div class="buttons">
             <button onclick="aggiornaAnteprima()">Aggiorna Anteprima</button>
-            <button onclick="scaricaPDF()">Scarica PDF A4</button>
+            <button onclick="scaricaPDF()" style="background: #00f7ff; color: #000; box-shadow: 0 0 10px #00f7ff;">Scarica PDF</button>
+            <button onclick="condividiPDF()">Condividi</button>
         </div>
     </div>
 
     <div style="overflow-x: auto; max-width: 100%;">
         <div class="cv-paper" id="cv_print_area">
             <div class="cv-header">
-                <div>
+                <div style="max-width: 70%;">
                     <h1 id="cv_nome" style="margin:0; color:#0056b3;">NOME COGNOME</h1>
-                    <p id="cv_contatti" style="font-weight: bold;"></p>
-                    <p id="cv_extra" style="font-style: italic;"></p>
+                    <p id="cv_contatti"></p>
                 </div>
                 <img id="cv_foto_preview" src="" alt="Foto">
             </div>
-
-            <div class="section-title">Profilo</div>
-            <p id="cv_profilo"></p>
-
-            <div class="section-title">Esperienza Lavorativa</div>
-            <p id="cv_esperienza"></p>
-
-            <div class="section-title">Istruzione e Formazione</div>
-            <p id="cv_formazione"></p>
-
-            <div class="section-title">Lingue</div>
-            <p id="cv_lingue"></p>
-
-            <div class="section-title">Competenze Tecniche</div>
-            <p id="cv_competenze"></p>
-
-            <div class="section-title">Hobby e Interessi</div>
-            <p id="cv_hobby"></p>
+            <div class="section-title">Profilo</div><p id="cv_profilo"></p>
+            <div class="section-title">Esperienza</div><p id="cv_esperienza"></p>
+            <div class="section-title">Formazione</div><p id="cv_formazione"></p>
+            <div class="section-title">Lingue</div><p id="cv_lingue"></p>
+            <div class="section-title">Competenze</div><p id="cv_competenze"></p>
+            <div class="section-title">Hobby</div><p id="cv_hobby"></p>
         </div>
     </div>
-</div>
-
-<div class="credits">
-    Progetto Didattico - Prof. G. Salerno & O. Semenyuk - 2026
 </div>
 
 <script>
@@ -243,7 +98,6 @@ function caricaFoto(event) {
 function aggiornaAnteprima(){
     document.getElementById('cv_nome').innerText = document.getElementById('nome').value || "NOME COGNOME";
     document.getElementById('cv_contatti').innerText = `${document.getElementById('indirizzo').value} | ${document.getElementById('email').value} | ${document.getElementById('telefono').value}`;
-    document.getElementById('cv_extra').innerText = `Patente: ${document.getElementById('patente').checked ? "Sì" : "No"} | Auto: ${document.getElementById('auto').checked ? "Sì" : "No"}`;
     document.getElementById('cv_profilo').innerText = document.getElementById('profilo').value;
     document.getElementById('cv_esperienza').innerText = document.getElementById('esperienza').value;
     document.getElementById('cv_formazione').innerText = document.getElementById('formazione').value;
@@ -252,19 +106,20 @@ function aggiornaAnteprima(){
     document.getElementById('cv_hobby').innerText = document.getElementById('hobby').value;
 }
 
-function scaricaPDF() {
+function creaDocumentoPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
     const stile = document.getElementById('stile_cv').value;
     let y = 20;
     const m = 15;
 
-    // Foto
     if (fotoBase64) {
-        try { doc.addImage(fotoBase64, 'JPEG', 160, 15, 35, 35); } catch(e){}
+        try {
+            // "NONE" indica a jsPDF di non ruotare l'immagine in base ai metadati
+            doc.addImage(fotoBase64, 'JPEG', 160, 15, 35, 40, undefined, 'MEDIUM', 0);
+        } catch(e){ console.error(e); }
     }
 
-    // Header
     doc.setFont("helvetica", "bold");
     doc.setTextColor(stile === "moderno" ? 0 : 0, stile === "moderno" ? 86 : 0, stile === "moderno" ? 179 : 0);
     doc.setFontSize(22);
@@ -274,18 +129,17 @@ function scaricaPDF() {
     doc.setFontSize(10);
     doc.setTextColor(80, 80, 80);
     doc.setFont("helvetica", "normal");
-    doc.text(`${document.getElementById('indirizzo').value} | ${document.getElementById('email').value} | ${document.getElementById('telefono').value}`, m, y);
+    doc.text(`${document.getElementById('indirizzo').value}\n${document.getElementById('email').value} | ${document.getElementById('telefono').value}`, m, y);
     y += 15;
 
     function addSect(title, content) {
         if (!content || content.trim() === "") return;
-        if (y > 260) { doc.addPage(); y = 20; }
+        if (y > 270) { doc.addPage(); y = 20; }
         doc.setFont("helvetica", "bold");
         doc.setTextColor(stile === "moderno" ? 0 : 0, stile === "moderno" ? 86 : 0, stile === "moderno" ? 179 : 0);
         doc.setFontSize(12);
         doc.text(title.toUpperCase(), m, y);
         y += 2;
-        doc.setDrawColor(220, 220, 220);
         doc.line(m, y, 195, y);
         y += 7;
         doc.setFont("helvetica", "normal");
@@ -303,11 +157,41 @@ function scaricaPDF() {
     addSect("Competenze", document.getElementById('competenze').value);
     addSect("Hobby", document.getElementById('hobby').value);
 
-    // Privacy
     let priv = document.getElementById('privacy').value;
-    if (priv) doc.setFontSize(8).text(doc.splitTextToSize(priv, 170), m, 285);
+    if (priv) {
+        doc.setFontSize(7);
+        doc.text(doc.splitTextToSize(priv, 170), m, 285);
+    }
 
-    doc.save("CV_Professionale.pdf");
+    return doc;
+}
+
+function scaricaPDF(){
+    aggiornaAnteprima();
+    const doc = creaDocumentoPDF();
+    doc.save("CV_Oleksandr_Semenyuk.pdf");
+}
+
+async function condividiPDF(){
+    aggiornaAnteprima();
+    const doc = creaDocumentoPDF();
+    const pdfBlob = doc.output('blob');
+    const file = new File([pdfBlob], "CV_Oleksandr_Semenyuk.pdf", { type: "application/pdf" });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+            await navigator.share({
+                files: [file],
+                title: 'Il mio CV',
+                text: 'Ecco il mio Curriculum Vitae in formato PDF.'
+            });
+        } catch (err) {
+            console.error("Errore condivisione:", err);
+        }
+    } else {
+        alert("La condivisione file non è supportata su questo browser. Il PDF verrà scaricato.");
+        scaricaPDF();
+    }
 }
 </script>
 </body>
