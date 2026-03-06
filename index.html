@@ -1,0 +1,120 @@
+// Sostituisci la funzione creaDocumentoPDF nel tuo script con questa:
+
+function creaDocumentoPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+    });
+    
+    const stile = document.getElementById('stile_cv').value;
+    let y = 20; 
+    const marginX = 15;
+    const pageWidth = 210;
+
+    // Recupero Dati
+    let nome = document.getElementById('nome').value || "NOME COGNOME";
+    let indirizzo = document.getElementById('indirizzo').value;
+    let email = document.getElementById('email').value;
+    let tel = document.getElementById('telefono').value;
+    let extra = `Patente: ${document.getElementById('patente').checked ? "Sì" : "No"} | Automunito: ${document.getElementById('auto').checked ? "Sì" : "No"}`;
+
+    // --- INTESTAZIONE E FOTO ---
+    if (fotoBase64) {
+        try {
+            // Inserimento foto mantenendo l'aspetto originale (aspect ratio)
+            // Posizionata a destra per uno stile professionale
+            doc.addImage(fotoBase64, 'JPEG', 160, 15, 35, 35, undefined, 'FAST');
+        } catch(e) { console.error("Errore foto:", e); }
+    }
+
+    if (stile === "moderno") {
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 86, 179); // Blu professionale
+        doc.setFontSize(22);
+        doc.text(nome.toUpperCase(), marginX, y);
+        
+        y += 8;
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(60, 60, 60);
+        doc.setFontSize(10);
+        doc.text(`${indirizzo}`, marginX, y);
+        y += 5;
+        doc.text(`Email: ${email} | Tel: ${tel}`, marginX, y);
+        y += 5;
+        doc.text(extra, marginX, y);
+        y += 15;
+    } else {
+        doc.setFont("times", "bold");
+        doc.setTextColor(30, 30, 30);
+        doc.setFontSize(24);
+        doc.text(nome.toUpperCase(), marginX, y);
+        
+        y += 10;
+        doc.setFont("times", "normal");
+        doc.setTextColor(80, 80, 80);
+        doc.setFontSize(11);
+        doc.text(`${indirizzo} | ${email} | ${tel}`, marginX, y);
+        y += 6;
+        doc.text(extra, marginX, y);
+        y += 12;
+    }
+
+    // --- FUNZIONE SEZIONI ---
+    function aggiungiSezione(titolo, testo) {
+        if (!testo || testo.trim() === "") return;
+
+        // Controllo fine pagina
+        if (y > 250) {
+            doc.addPage();
+            y = 20;
+        }
+
+        // Titolo Sezione stile Europass
+        doc.setFont(stile === "moderno" ? "helvetica" : "times", "bold");
+        doc.setTextColor(stile === "moderno" ? 0, 86, 179 : 0, 0, 0);
+        doc.setFontSize(13);
+        doc.text(titolo.toUpperCase(), marginX, y);
+        
+        y += 2;
+        doc.setDrawColor(stile === "moderno" ? 0, 86, 179 : 200, 200, 200);
+        doc.setLineWidth(0.5);
+        doc.line(marginX, y, 195, y); 
+        y += 7;
+
+        // Testo Sezione
+        doc.setFont(stile === "moderno" ? "helvetica" : "times", "normal");
+        doc.setTextColor(40, 40, 40);
+        doc.setFontSize(11);
+
+        let righe = doc.splitTextToSize(testo, 175);
+        
+        for(let i=0; i<righe.length; i++) {
+            if(y > 280) {
+                doc.addPage();
+                y = 20;
+            }
+            doc.text(righe[i], marginX, y);
+            y += 6; 
+        }
+        y += 5; // Spazio tra sezioni
+    }
+
+    aggiungiSezione("Profilo Professionale", document.getElementById('profilo').value);
+    aggiungiSezione("Esperienze Lavorative", document.getElementById('esperienza').value);
+    aggiungiSezione("Istruzione e Formazione", document.getElementById('formazione').value);
+    aggiungiSezione("Competenze Digitali e Interpersonali", document.getElementById('competenze').value);
+    aggiungiSezione("Informazioni Aggiuntive / Social", document.getElementById('social').value);
+
+    // --- PRIVACY (FOOTER) ---
+    let privacy = document.getElementById('privacy').value;
+    if (privacy) {
+        doc.setFontSize(8);
+        doc.setTextColor(130, 130, 130);
+        let righePrivacy = doc.splitTextToSize(privacy, 170);
+        doc.text(righePrivacy, marginX, 285 - (righePrivacy.length * 3));
+    }
+
+    return doc;
+}
